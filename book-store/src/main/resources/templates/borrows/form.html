@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Đăng ký Mượn Sách')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar('borrows')}"></nav>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/borrows}" class="text-decoration-none">Mượn / Trả Sách</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Tạo phiếu mượn sách</li>
+                    </ol>
+                </nav>
+                <a th:href="@{/borrows}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Danh sách đang mượn
+                </a>
+            </div>
+
+            <div class="card-modern p-4 p-md-5">
+                <div class="border-bottom pb-3 mb-4">
+                    <h3 class="fw-bold mb-1">
+                        <i class="bi bi-bookmark-plus-fill text-primary me-2"></i>Đăng ký Mượn Sách
+                    </h3>
+                    <p class="text-muted small mb-0">
+                        Điền thông tin người mượn và thời hạn trả sách.
+                    </p>
+                </div>
+
+                <!-- Business Rules Notice -->
+                <div class="alert alert-pastel-info small mb-4 p-3">
+                    <div class="fw-bold mb-1" style="color: #6d28d9;">
+                        <i class="bi bi-shield-check me-1"></i> Quy định mượn sách tại thư viện:
+                    </div>
+                    <ul class="mb-0 ps-3">
+                        <li>Sách đã <strong>hết trong kho (số lượng = 0)</strong> sẽ không thể đăng ký mượn.</li>
+                        <li>Một địa chỉ <strong>Email không được mượn trùng cùng một cuốn sách</strong> khi chưa trả cuốn sách đó.</li>
+                        <li>Khi đăng ký mượn thành công, số lượng sách tồn kho sẽ giảm đi 1 đơn vị.</li>
+                    </ul>
+                </div>
+
+                <form th:action="@{/borrows}"
+                      th:object="${borrowForm}"
+                      method="post"
+                      novalidate>
+
+                    <div class="row g-3">
+                        <!-- Chọn sách -->
+                        <div class="col-12">
+                            <label for="bookId" class="form-label fw-semibold">
+                                Chọn Sách cần mượn <span class="text-danger">*</span>
+                            </label>
+                            <select id="bookId"
+                                    th:field="*{bookId}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('bookId')} ? 'is-invalid' : ''">
+                                <option value="">-- Chọn đầu sách --</option>
+                                <option th:each="b : ${books}"
+                                        th:value="${b.id}"
+                                        th:text="${'[' + b.code + '] ' + b.title + ' - ' + b.author + (b.quantity > 0 ? ' (Còn ' + b.quantity + ' cuốn)' : ' (HẾT SÁCH - 0 cuốn)')}">
+                                    [BK-001] Clean Code - Robert C. Martin (Còn 5 cuốn)
+                                </option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('bookId')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{bookId}">Lỗi chọn sách</span>
+                            </div>
+                        </div>
+
+                        <!-- Tên người mượn -->
+                        <div class="col-12 col-md-6">
+                            <label for="borrowerName" class="form-label fw-semibold">
+                                Họ và tên người mượn <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   id="borrowerName"
+                                   th:field="*{borrowerName}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('borrowerName')} ? 'is-invalid' : ''"
+                                   placeholder="VD: Nguyễn Văn An">
+                            <div th:if="${#fields.hasErrors('borrowerName')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{borrowerName}">Lỗi tên người mượn</span>
+                            </div>
+                        </div>
+
+                        <!-- Email người mượn -->
+                        <div class="col-12 col-md-6">
+                            <label for="borrowerEmail" class="form-label fw-semibold">
+                                Email người mượn <span class="text-danger">*</span>
+                            </label>
+                            <input type="email"
+                                   id="borrowerEmail"
+                                   th:field="*{borrowerEmail}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('borrowerEmail')} ? 'is-invalid' : ''"
+                                   placeholder="VD: an.nguyen@example.com">
+                            <div th:if="${#fields.hasErrors('borrowerEmail')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{borrowerEmail}">Lỗi email người mượn</span>
+                            </div>
+                        </div>
+
+                        <!-- Ngày mượn -->
+                        <div class="col-12 col-md-6">
+                            <label for="borrowDate" class="form-label fw-semibold">
+                                Ngày mượn <span class="text-danger">*</span>
+                            </label>
+                            <input type="date"
+                                   id="borrowDate"
+                                   th:field="*{borrowDate}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('borrowDate')} ? 'is-invalid' : ''">
+                            <div th:if="${#fields.hasErrors('borrowDate')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{borrowDate}">Lỗi ngày mượn</span>
+                            </div>
+                        </div>
+
+                        <!-- Hạn trả -->
+                        <div class="col-12 col-md-6">
+                            <label for="dueDate" class="form-label fw-semibold">
+                                Hạn trả sách <span class="text-danger">*</span>
+                            </label>
+                            <input type="date"
+                                   id="dueDate"
+                                   th:field="*{dueDate}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('dueDate')} ? 'is-invalid' : ''">
+                            <div th:if="${#fields.hasErrors('dueDate')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{dueDate}">Lỗi hạn trả</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/borrows}" class="btn btn-light border px-4">Huỷ bỏ</a>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4">
+                            <i class="bi bi-check2-circle me-1"></i> Xác nhận Mượn sách
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
+

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản lý Mượn / Trả Sách')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar('borrows')}"></nav>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-arrow-left-right text-primary me-2"></i>Quản lý Mượn &amp; Trả Sách
+            </h2>
+            <p class="text-muted mb-0">
+                Theo dõi danh sách sách đang mượn, cảnh báo quá hạn tự động và ghi nhận trả sách
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/books}" class="btn btn-outline-secondary">
+                <i class="bi bi-book me-1"></i> Danh sách Sách
+            </a>
+            <a th:href="@{/borrows/new}" class="btn btn-primary fw-semibold">
+                <i class="bi bi-bookmark-plus-fill me-1"></i> Tạo phiếu mượn mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="stat-card stat-card-active d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-secondary small fw-semibold text-uppercase">Đang mượn (Chưa trả)</div>
+                    <div class="fs-2 fw-bold text-primary mt-1" th:text="${activeCount}">5</div>
+                    <div class="small text-muted">Phiếu mượn đang hoạt động</div>
+                </div>
+                <i class="bi bi-journal-arrow-up fs-1 text-primary opacity-50"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="stat-card stat-card-overdue d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-danger small fw-semibold text-uppercase">Đang Quá hạn trả</div>
+                    <div class="fs-2 fw-bold text-danger mt-1" th:text="${overdueCount}">2</div>
+                    <div class="small text-danger">Hạn trả trước ngày <span th:text="${#temporals.format(today, 'dd/MM/yyyy')}"></span></div>
+                </div>
+                <i class="bi bi-exclamation-octagon-fill fs-1 text-danger opacity-50"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="stat-card stat-card-returned d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-success small fw-semibold text-uppercase">Đã hoàn trả</div>
+                    <div class="fs-2 fw-bold text-success mt-1" th:text="${returnedCount}">2</div>
+                    <div class="small text-muted">Đã cộng lại sách vào kho</div>
+                </div>
+                <i class="bi bi-check2-all fs-1 text-success opacity-50"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs & Keyword Search -->
+    <div class="card-modern p-3 p-md-4 mb-4">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-12 col-lg-auto">
+                <ul class="nav nav-pills gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold"
+                           th:classappend="${status == 'ACTIVE'} ? 'active' : 'text-secondary bg-light'"
+                           th:href="@{/borrows(status='ACTIVE',keyword=${keyword})}">
+                            <i class="bi bi-hourglass-split me-1"></i> Đang mượn
+                            <span class="badge ms-1"
+                                  th:classappend="${status == 'ACTIVE'} ? 'bg-white text-primary' : 'bg-secondary'"
+                                  th:text="${activeCount}">5</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold"
+                           th:classappend="${status == 'OVERDUE'} ? 'bg-danger text-white active' : 'text-danger bg-danger bg-opacity-10'"
+                           th:href="@{/borrows(status='OVERDUE',keyword=${keyword})}">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Quá hạn
+                            <span class="badge ms-1"
+                                  th:classappend="${status == 'OVERDUE'} ? 'bg-white text-danger' : 'bg-danger'"
+                                  th:text="${overdueCount}">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold"
+                           th:classappend="${status == 'RETURNED'} ? 'active' : 'text-secondary bg-light'"
+                           th:href="@{/borrows(status='RETURNED',keyword=${keyword})}">
+                            <i class="bi bi-check-circle me-1"></i> Đã trả
+                            <span class="badge ms-1"
+                                  th:classappend="${status == 'RETURNED'} ? 'bg-white text-primary' : 'bg-secondary'"
+                                  th:text="${returnedCount}">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold"
+                           th:classappend="${status == 'ALL'} ? 'active' : 'text-secondary bg-light'"
+                           th:href="@{/borrows(status='ALL',keyword=${keyword})}">
+                            Tất cả
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <form th:action="@{/borrows}" method="get" class="d-flex gap-2">
+                    <input type="hidden" name="status" th:value="${status}">
+                    <input type="text" name="keyword" class="form-control"
+                           placeholder="Tìm theo tên người mượn, email, tên sách..."
+                           th:value="${keyword}">
+                    <button type="submit" class="btn btn-primary fw-semibold px-3">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a th:href="@{/borrows(status=${status})}" class="btn btn-light border" title="Xoá từ khoá">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Borrows Table -->
+    <div class="card-modern overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover table-modern mb-0">
+                <thead>
+                <tr>
+                    <th>Mã phiếu</th>
+                    <th>Thông tin Sách</th>
+                    <th>Người mượn</th>
+                    <th>Email</th>
+                    <th class="text-center">Ngày mượn</th>
+                    <th class="text-center">Hạn trả</th>
+                    <th class="text-center">Ngày trả</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(borrows)}">
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        Không có phiếu mượn nào trong danh sách hiện tại.
+                    </td>
+                </tr>
+
+                <tr th:each="br : ${borrows}" th:classappend="${br.overdue} ? 'row-overdue' : ''">
+                    <td>
+                        <span class="code-pill" th:text="${'#PM-' + br.id}">#PM-1</span>
+                    </td>
+                    <td>
+                        <div class="fw-semibold text-dark" th:text="${br.book.title}">Clean Code</div>
+                        <div class="small text-muted">
+                            <span class="code-pill py-0 px-1" style="font-size: 0.75rem;" th:text="${br.book.code}">BK-001</span>
+                            &bull; <span th:text="${br.book.category.name}">CNTT</span>
+                        </div>
+                    </td>
+                    <td class="fw-medium" th:text="${br.borrowerName}">Nguyễn Văn An</td>
+                    <td>
+                        <span class="text-secondary small">
+                            <i class="bi bi-envelope me-1"></i>
+                            <span th:text="${br.borrowerEmail}">an.nguyen@example.com</span>
+                        </span>
+                    </td>
+                    <td class="text-center" th:text="${#temporals.format(br.borrowDate, 'dd/MM/yyyy')}">01/11/2026</td>
+                    <td class="text-center">
+                        <span th:class="${br.overdue ? 'fw-bold text-danger' : 'text-dark'}"
+                              th:text="${#temporals.format(br.dueDate, 'dd/MM/yyyy')}">15/11/2026</span>
+                    </td>
+                    <td class="text-center">
+                        <span th:if="${br.returnDate != null}"
+                              class="fw-medium text-success"
+                              th:text="${#temporals.format(br.returnDate, 'dd/MM/yyyy')}">10/11/2026</span>
+                        <span th:if="${br.returnDate == null}" class="text-muted small fst-italic">Chưa trả</span>
+                    </td>
+                    <td class="text-center">
+                        <!-- Đang mượn & QUÁ HẠN -->
+                        <span th:if="${br.overdue}" class="badge rounded-pill badge-overdue px-3 py-2">
+                            <i class="bi bi-exclamation-octagon-fill me-1"></i>
+                            QUÁ HẠN (Trễ <span th:text="${br.overdueDays}">6</span> ngày)
+                        </span>
+
+                        <!-- Đang mượn & CÒN HẠN -->
+                        <span th:if="${!br.returned and !br.overdue}" class="badge rounded-pill badge-active-borrow px-3 py-2">
+                            <i class="bi bi-clock me-1"></i>
+                            Đang mượn
+                            <span th:if="${br.remainingDays > 0}">(còn <span th:text="${br.remainingDays}">9</span> ngày)</span>
+                            <span th:if="${br.remainingDays == 0}">(Hạn hôm nay)</span>
+                        </span>
+
+                        <!-- ĐÃ TRẢ -->
+                        <span th:if="${br.returned}" class="badge rounded-pill badge-returned px-3 py-2">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Đã trả
+                            <span th:if="${br.returnedLate}" class="text-danger">(trễ <span th:text="${br.overdueDays}"></span> ngày)</span>
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <button th:if="${!br.returned}"
+                                type="button"
+                                class="btn btn-sm btn-success fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#returnBookModal"
+                                th:data-borrow-id="${br.id}"
+                                th:data-book-title="${br.book.title}"
+                                th:data-borrower-name="${br.borrowerName}"
+                                th:data-borrower-email="${br.borrowerEmail}"
+                                onclick="prepareReturnBook(this)">
+                            <i class="bi bi-box-arrow-in-down-left me-1"></i> Trả sách
+                        </button>
+                        <span th:if="${br.returned}" class="badge bg-light text-secondary border">
+                            <i class="bi bi-check2"></i> Hoàn tất
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Confirmation Modal for Returning a Book -->
+<div class="modal fade" id="returnBookModal" tabindex="-1" aria-labelledby="returnBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header modal-header-pastel-success">
+                <h5 class="modal-title fw-bold" id="returnBookModalLabel">
+                    <i class="bi bi-check2-circle me-2"></i>Xác nhận trả sách
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">Xác nhận người mượn đã hoàn trả cuốn sách sau?</p>
+                <div class="p-3 rounded-4 border" style="background-color: #faf5ff; border-color: #e9d5ff !important;">
+                    <div class="fw-bold text-dark" id="modalReturnBookTitle">Tên sách</div>
+                    <div class="small text-secondary mt-1">
+                        Người mượn: <strong id="modalReturnBorrowerName">Nguyễn Văn A</strong>
+                        (<span id="modalReturnBorrowerEmail">email@example.com</span>)
+                    </div>
+                </div>
+                <p class="small text-success mt-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Ngày trả sẽ được ghi nhận là hôm nay và số lượng sách trong kho sẽ tự động cộng thêm 1.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ bỏ</button>
+                <form id="returnBookForm" method="post" action="">
+                    <input type="hidden" name="status" th:value="${status}">
+                    <button type="submit" class="btn btn-success fw-semibold">
+                        <i class="bi bi-check-lg me-1"></i> Xác nhận trả sách
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function prepareReturnBook(button) {
+        const id = button.getAttribute('data-borrow-id');
+        const bookTitle = button.getAttribute('data-book-title');
+        const borrowerName = button.getAttribute('data-borrower-name');
+        const borrowerEmail = button.getAttribute('data-borrower-email');
+        document.getElementById('modalReturnBookTitle').textContent = bookTitle;
+        document.getElementById('modalReturnBorrowerName').textContent = borrowerName;
+        document.getElementById('modalReturnBorrowerEmail').textContent = borrowerEmail;
+        document.getElementById('returnBookForm').setAttribute('action', '/borrows/' + id + '/return');
+    }
+</script>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
+

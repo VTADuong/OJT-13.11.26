@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản lý Thể loại Sách')}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar('categories')}"></nav>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-tags-fill text-primary me-2"></i>Quản lý Thể loại Sách
+            </h2>
+            <p class="text-muted mb-0">
+                Danh sách các thể loại sách trong thư viện (tên thể loại là duy nhất, không trùng lặp)
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/books}" class="btn btn-outline-secondary">
+                <i class="bi bi-book me-1"></i> Danh sách Sách
+            </a>
+            <a th:href="@{/categories/new}" class="btn btn-primary fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i> Thêm thể loại mới
+            </a>
+        </div>
+    </div>
+
+    <div class="card-modern overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover table-modern mb-0">
+                <thead>
+                <tr>
+                    <th style="width: 90px;">ID</th>
+                    <th>Tên thể loại</th>
+                    <th class="text-center">Số đầu sách</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(categories)}">
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        <i class="bi bi-tags fs-1 d-block mb-2"></i>
+                        Chưa có thể loại sách nào trong hệ thống.
+                    </td>
+                </tr>
+
+                <tr th:each="cat : ${categories}">
+                    <td>
+                        <span class="code-pill" th:text="${'#' + cat.id}">#1</span>
+                    </td>
+                    <td>
+                        <span class="fw-semibold text-dark fs-6" th:text="${cat.name}">Công nghệ thông tin</span>
+                    </td>
+                    <td class="text-center">
+                        <a th:href="@{/books(categoryId=${cat.id})}"
+                           class="badge-category">
+                            <i class="bi bi-journal-bookmark me-1"></i>
+                            <span th:text="${cat.bookCount}">4</span> đầu sách
+                        </a>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-inline-flex gap-1">
+                            <a th:href="@{/books(categoryId=${cat.id})}"
+                               class="btn btn-sm btn-outline-secondary"
+                               title="Xem các sách thuộc thể loại này">
+                                <i class="bi bi-eye"></i> Xem sách
+                            </a>
+                            <a th:href="@{/categories/{id}/edit(id=${cat.id})}"
+                               class="btn btn-sm btn-outline-primary"
+                               title="Sửa tên thể loại">
+                                <i class="bi bi-pencil-square"></i> Sửa
+                            </a>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteCategoryModal"
+                                    th:data-category-id="${cat.id}"
+                                    th:data-category-name="${cat.name}"
+                                    th:data-book-count="${cat.bookCount}"
+                                    onclick="prepareDeleteCategory(this)"
+                                    title="Xoá thể loại">
+                                <i class="bi bi-trash"></i> Xoá
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Confirmation Modal for Category Deletion -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header modal-header-pastel-danger">
+                <h5 class="modal-title fw-bold" id="deleteCategoryModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Xác nhận xoá thể loại
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">Bạn có chắc chắn muốn xoá thể loại sách sau?</p>
+                <div class="p-3 rounded-4 border" style="background-color: #faf5ff; border-color: #e9d5ff !important;">
+                    <div class="fw-bold text-dark" id="modalCategoryName">Tên thể loại</div>
+                    <div class="small text-muted mt-1">
+                        Số đầu sách hiện có: <strong id="modalCategoryBookCount">0</strong> cuốn
+                    </div>
+                </div>
+                <p class="small text-danger mt-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Lưu ý: Nếu thể loại đang chứa sách, hệ thống sẽ từ chối xoá để bảo toàn dữ liệu.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ bỏ</button>
+                <form id="deleteCategoryForm" method="post" action="">
+                    <button type="submit" class="btn btn-danger fw-semibold">
+                        <i class="bi bi-trash me-1"></i> Xác nhận xoá
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function prepareDeleteCategory(button) {
+        const id = button.getAttribute('data-category-id');
+        const name = button.getAttribute('data-category-name');
+        const count = button.getAttribute('data-book-count');
+        document.getElementById('modalCategoryName').textContent = name;
+        document.getElementById('modalCategoryBookCount').textContent = count;
+        document.getElementById('deleteCategoryForm').setAttribute('action', '/categories/' + id + '/delete');
+    }
+</script>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
+

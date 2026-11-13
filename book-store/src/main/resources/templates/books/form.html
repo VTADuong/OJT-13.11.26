@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${isEdit ? 'Cập nhật Sách' : 'Thêm Sách mới'})}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar('books')}"></nav>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/books}" class="text-decoration-none">Danh sách Sách</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="${isEdit ? 'Cập nhật sách' : 'Thêm sách mới'}">Thêm sách mới</li>
+                    </ol>
+                </nav>
+                <a th:href="@{/books}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+            </div>
+
+            <div class="card-modern p-4 p-md-5">
+                <div class="border-bottom pb-3 mb-4">
+                    <h3 class="fw-bold mb-1">
+                        <i th:class="${isEdit ? 'bi bi-pencil-square text-primary me-2' : 'bi bi-journal-plus text-primary me-2'}"></i>
+                        <span th:text="${isEdit ? 'Cập nhật thông tin Sách' : 'Thêm Sách mới vào Thư viện'}">Thêm Sách mới</span>
+                    </h3>
+                    <p class="text-muted small mb-0">
+                        Vui lòng điền đầy đủ các trường bắt buộc (<span class="text-danger">*</span>). Mã sách không được trùng lặp.
+                    </p>
+                </div>
+
+                <form th:action="${isEdit ? '/books/' + bookForm.id : '/books'}"
+                      th:object="${bookForm}"
+                      method="post"
+                      novalidate>
+
+                    <div class="row g-3">
+                        <!-- Mã sách -->
+                        <div class="col-12 col-md-5">
+                            <label for="code" class="form-label fw-semibold">
+                                Mã sách <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   id="code"
+                                   th:field="*{code}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('code')} ? 'is-invalid' : ''"
+                                   placeholder="VD: BK-CNTT-005">
+                            <div th:if="${#fields.hasErrors('code')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{code}">Lỗi mã sách</span>
+                            </div>
+                        </div>
+
+                        <!-- Thể loại -->
+                        <div class="col-12 col-md-7">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="categoryId" class="form-label fw-semibold">
+                                    Thể loại sách <span class="text-danger">*</span>
+                                </label>
+                                <a th:href="@{/categories/new}" class="small text-decoration-none">
+                                    <i class="bi bi-plus-circle"></i> Thêm thể loại mới
+                                </a>
+                            </div>
+                            <select id="categoryId"
+                                    th:field="*{categoryId}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''">
+                                <option value="">-- Chọn thể loại sách --</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.id}"
+                                        th:text="${cat.name}">
+                                    Công nghệ thông tin
+                                </option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('categoryId')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{categoryId}">Lỗi thể loại</span>
+                            </div>
+                        </div>
+
+                        <!-- Tên sách -->
+                        <div class="col-12">
+                            <label for="title" class="form-label fw-semibold">
+                                Tên sách <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   id="title"
+                                   th:field="*{title}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''"
+                                   placeholder="Nhập tên đầy đủ của cuốn sách...">
+                            <div th:if="${#fields.hasErrors('title')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{title}">Lỗi tên sách</span>
+                            </div>
+                        </div>
+
+                        <!-- Tác giả -->
+                        <div class="col-12 col-md-6">
+                            <label for="author" class="form-label fw-semibold">
+                                Tác giả <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   id="author"
+                                   th:field="*{author}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('author')} ? 'is-invalid' : ''"
+                                   placeholder="Nhập tên tác giả...">
+                            <div th:if="${#fields.hasErrors('author')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{author}">Lỗi tác giả</span>
+                            </div>
+                        </div>
+
+                        <!-- Năm xuất bản -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label for="publishYear" class="form-label fw-semibold">
+                                Năm xuất bản <span class="text-danger">*</span>
+                            </label>
+                            <input type="number"
+                                   id="publishYear"
+                                   th:field="*{publishYear}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('publishYear')} ? 'is-invalid' : ''"
+                                   placeholder="VD: 2024">
+                            <div th:if="${#fields.hasErrors('publishYear')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{publishYear}">Lỗi năm xuất bản</span>
+                            </div>
+                        </div>
+
+                        <!-- Số lượng -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label for="quantity" class="form-label fw-semibold">
+                                Số lượng tồn <span class="text-danger">*</span>
+                            </label>
+                            <input type="number"
+                                   id="quantity"
+                                   th:field="*{quantity}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''"
+                                   placeholder="VD: 5">
+                            <div th:if="${#fields.hasErrors('quantity')}" class="field-error-msg">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span th:errors="*{quantity}">Lỗi số lượng</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/books}" class="btn btn-light border px-4">Huỷ bỏ</a>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4">
+                            <i class="bi bi-check2-circle me-1"></i>
+                            <span th:text="${isEdit ? 'Lưu cập nhật' : 'Thêm sách mới'}">Lưu thông tin</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
+

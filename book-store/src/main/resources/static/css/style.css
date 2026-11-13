@@ -1,0 +1,535 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Quicksand:wght@600;700&display=swap');
+
+:root {
+    /* Gen Z Pastel Palette */
+    --pastel-bg-start: #fdfbff;
+    --pastel-bg-mid: #f5f3ff;
+    --pastel-bg-end: #fdf2f8;
+
+    --lavender-50: #faf5ff;
+    --lavender-100: #f3e8ff;
+    --lavender-200: #e9d5ff;
+    --lavender-300: #d8b4fe;
+    --lavender-500: #8b5cf6;
+    --lavender-600: #7c3aed;
+    --lavender-700: #6d28d9;
+
+    --pink-50: #fdf2f8;
+    --pink-100: #fce7f3;
+    --pink-200: #fbcfe8;
+    --pink-500: #ec4899;
+
+    --mint-50: #ecfdf5;
+    --mint-100: #d1fae5;
+    --mint-200: #a7f3d0;
+    --mint-600: #059669;
+    --mint-700: #047857;
+
+    --rose-50: #fff1f2;
+    --rose-100: #ffe4e6;
+    --rose-200: #fecdd3;
+    --rose-500: #f43f5e;
+    --rose-700: #be123c;
+
+    --sky-50: #f0f9ff;
+    --sky-100: #e0f2fe;
+    --sky-200: #bae6fd;
+    --sky-700: #0369a1;
+
+    --butter-100: #fef3c7;
+    --butter-700: #b45309;
+
+    --text-main: #332940;
+    --text-secondary: #5b4f6d;
+    --text-muted: #847799;
+    --border-soft: #ede9fe;
+    --card-bg: rgba(255, 255, 255, 0.92);
+}
+
+body {
+    background: linear-gradient(135deg, var(--pastel-bg-start) 0%, var(--pastel-bg-mid) 50%, var(--pastel-bg-end) 100%);
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, .navbar-brand-custom {
+    font-family: 'Quicksand', 'Be Vietnam Pro', sans-serif;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
+   Soft Pastel Glassmorphism Navbar
+   ========================================================================== */
+.navbar-custom {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1.5px solid var(--lavender-200);
+    box-shadow: 0 8px 28px -6px rgba(139, 92, 246, 0.08);
+    padding: 0.7rem 0;
+}
+
+.navbar-brand-custom {
+    font-weight: 700;
+    font-size: 1.35rem;
+    background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ede9fe 0%, #fce7f3 100%);
+    color: #7c3aed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd6fe;
+    -webkit-text-fill-color: initial;
+}
+
+.navbar-custom .nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+    padding: 0.5rem 1.15rem !important;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+    font-size: 0.92rem;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--lavender-700) !important;
+    background-color: var(--lavender-50);
+    transform: translateY(-1px);
+}
+
+.navbar-custom .nav-link.active {
+    color: var(--lavender-700) !important;
+    background: linear-gradient(135deg, #ede9fe 0%, #fce7f3 100%);
+    box-shadow: 0 3px 10px rgba(139, 92, 246, 0.12);
+}
+
+/* ==========================================================================
+   Soft Cards & Containers
+   ========================================================================== */
+.card-modern {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid var(--lavender-200);
+    border-radius: 24px;
+    box-shadow: 0 12px 32px -8px rgba(139, 92, 246, 0.08), 0 4px 12px rgba(236, 72, 153, 0.03);
+}
+
+.card-header-pastel {
+    background: linear-gradient(90deg, rgba(243, 232, 255, 0.55) 0%, rgba(252, 231, 243, 0.55) 100%);
+    border-bottom: 1px solid var(--lavender-200);
+}
+
+/* ==========================================================================
+   Stat Cards (Pastel Edition)
+   ========================================================================== */
+.stat-card {
+    border-radius: 22px;
+    padding: 1.3rem 1.5rem;
+    transition: all 0.2s ease;
+    border: 1.5px solid transparent;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card-active {
+    background: linear-gradient(135deg, #eff6ff 0%, #f3e8ff 100%);
+    border-color: #ddd6fe;
+    box-shadow: 0 8px 20px -6px rgba(139, 92, 246, 0.12);
+}
+
+.stat-card-overdue {
+    background: linear-gradient(135deg, #fff1f2 0%, #fce7f3 100%);
+    border-color: #fecdd3;
+    box-shadow: 0 8px 20px -6px rgba(244, 63, 94, 0.12);
+}
+
+.stat-card-returned {
+    background: linear-gradient(135deg, #ecfdf5 0%, #e0f2fe 100%);
+    border-color: #a7f3d0;
+    box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.12);
+}
+
+/* ==========================================================================
+   Buttons (Soft Pill Aesthetic)
+   ========================================================================== */
+.btn {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.48rem 1.15rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 0.01em;
+}
+
+.btn-sm {
+    padding: 0.32rem 0.85rem;
+    font-size: 0.82rem;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1.5px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 6px 16px -3px rgba(139, 92, 246, 0.35);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);
+    color: #ffffff;
+    box-shadow: 0 8px 20px -3px rgba(139, 92, 246, 0.45);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 5px 14px -3px rgba(16, 185, 129, 0.32);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 5px 14px -3px rgba(244, 63, 94, 0.32);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: #ffffff;
+}
+
+.btn-pastel-cta {
+    background: linear-gradient(135deg, #fce7f3 0%, #ede9fe 100%);
+    color: #6d28d9;
+    border: 1.5px solid #d8b4fe;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+}
+
+.btn-pastel-cta:hover {
+    background: linear-gradient(135deg, #fbcfe8 0%, #ddd6fe 100%);
+    color: #5b21b6;
+}
+
+.btn-outline-primary {
+    color: var(--lavender-700);
+    background-color: var(--lavender-50);
+    border: 1.5px solid var(--lavender-200);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--lavender-100);
+    border-color: var(--lavender-300);
+    color: var(--lavender-700);
+}
+
+.btn-outline-danger {
+    color: var(--rose-700);
+    background-color: var(--rose-50);
+    border: 1.5px solid var(--rose-200);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--rose-100);
+    border-color: #fda4af;
+    color: var(--rose-700);
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    background-color: #ffffff;
+    border: 1.5px solid var(--lavender-200);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--lavender-50);
+    border-color: var(--lavender-300);
+    color: var(--lavender-700);
+}
+
+/* ==========================================================================
+   Form Inputs & Selects
+   ========================================================================== */
+.form-control, .form-select {
+    border-radius: 14px;
+    border: 1.5px solid var(--lavender-200);
+    background-color: #fdfcff;
+    color: var(--text-main);
+    padding: 0.6rem 1rem;
+    font-size: 0.92rem;
+    transition: all 0.2s ease;
+}
+
+.form-control::placeholder {
+    color: #b0a4c4;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #ffffff;
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+    color: var(--text-main);
+}
+
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #fda4af;
+    background-color: #fffafb;
+}
+
+.form-control.is-invalid:focus, .form-select.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.18);
+}
+
+/* ==========================================================================
+   Soft Pastel Table
+   ========================================================================== */
+.table-modern {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: rgba(243, 232, 255, 0.38);
+}
+
+.table-modern th {
+    background: linear-gradient(90deg, #f5f3ff 0%, #fdf2f8 100%);
+    color: var(--text-secondary);
+    font-family: 'Quicksand', 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1.5px solid var(--lavender-200);
+    padding: 0.95rem 1rem;
+    white-space: nowrap;
+}
+
+.table-modern td {
+    padding: 0.95rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3e8ff;
+    color: var(--text-main);
+}
+
+.sort-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.15s ease;
+}
+
+.sort-link:hover {
+    color: var(--lavender-600);
+}
+
+/* Overdue Row Highlight (Pastel Coral Rose) */
+.row-overdue {
+    background-color: rgba(255, 228, 230, 0.55) !important;
+}
+
+.row-overdue td:first-child {
+    border-left: 4px solid #fb7185;
+}
+
+/* ==========================================================================
+   Pastel Badges & Pills
+   ========================================================================== */
+.badge-overdue {
+    background-color: var(--rose-100);
+    color: var(--rose-700);
+    border: 1px solid var(--rose-200);
+    font-weight: 600;
+}
+
+.badge-active-borrow {
+    background-color: var(--sky-100);
+    color: var(--sky-700);
+    border: 1px solid var(--sky-200);
+    font-weight: 600;
+}
+
+.badge-returned {
+    background-color: var(--mint-100);
+    color: var(--mint-700);
+    border: 1px solid var(--mint-200);
+    font-weight: 600;
+}
+
+.badge-out-of-stock {
+    background-color: var(--rose-100);
+    color: var(--rose-700);
+    border: 1px solid var(--rose-200);
+    font-weight: 600;
+}
+
+.badge-in-stock {
+    background-color: var(--mint-100);
+    color: var(--mint-700);
+    border: 1px solid var(--mint-200);
+    font-weight: 600;
+}
+
+.badge-category {
+    background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
+    color: var(--lavender-700);
+    border: 1px solid var(--lavender-200);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s ease;
+}
+
+.badge-category:hover {
+    background: linear-gradient(135deg, #e9d5ff 0%, #fbcfe8 100%);
+    color: #5b21b6;
+    transform: translateY(-1px);
+}
+
+.code-pill {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.82rem;
+    background-color: var(--lavender-50);
+    color: var(--lavender-700);
+    padding: 0.28rem 0.65rem;
+    border-radius: 10px;
+    border: 1px solid var(--lavender-200);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Alerts, Pagination, Modals & Validation
+   ========================================================================== */
+.alert-pastel-success {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+    border: 1.5px solid #a7f3d0;
+    color: #065f46;
+    border-radius: 18px;
+}
+
+.alert-pastel-danger {
+    background: linear-gradient(135deg, #fff1f2 0%, #fdf2f8 100%);
+    border: 1.5px solid #fecdd3;
+    color: #9f1239;
+    border-radius: 18px;
+}
+
+.alert-pastel-info {
+    background: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 100%);
+    border: 1.5px solid var(--lavender-200);
+    color: var(--text-main);
+    border-radius: 18px;
+}
+
+.field-error-msg {
+    color: #e11d48;
+    font-size: 0.83rem;
+    margin-top: 0.38rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+}
+
+.pagination .page-link {
+    border-radius: 12px !important;
+    margin: 0 3px;
+    border: 1.5px solid var(--lavender-200);
+    color: var(--lavender-700);
+    font-weight: 600;
+    padding: 0.38rem 0.8rem;
+    background-color: #ffffff;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #faf5ff;
+    color: #c4b5fd;
+    border-color: #f3e8ff;
+}
+
+.nav-pills .nav-link {
+    border-radius: 999px;
+    padding: 0.48rem 1.15rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.nav-pills .nav-link.active {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.28);
+}
+
+.modal-content {
+    border-radius: 24px;
+    border: 1.5px solid var(--lavender-200);
+    box-shadow: 0 20px 45px rgba(88, 28, 135, 0.16);
+    overflow: hidden;
+}
+
+.modal-header-pastel-danger {
+    background: linear-gradient(135deg, #ffe4e6 0%, #fce7f3 100%);
+    color: #9f1239;
+    border-bottom: 1px solid #fecdd3;
+}
+
+.modal-header-pastel-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #e0f2fe 100%);
+    color: #065f46;
+    border-bottom: 1px solid #a7f3d0;
+}
+
+.error-404-box {
+    max-width: 620px;
+    margin: 3.5rem auto;
+    text-align: center;
+    padding: 3.2rem 2.2rem;
+}
+
+.error-code-badge {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 5.5rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 60%, #fb7185 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+footer {
+    margin-top: auto;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    border-top: 1.5px solid var(--lavender-200);
+}
