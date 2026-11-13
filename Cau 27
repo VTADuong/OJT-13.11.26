@@ -1,0 +1,21 @@
+public static String demChanVaMax(String s) {
+    String[] parts = s.trim().split("\\s+");
+    int countEven = 0;
+    int max = Integer.MIN_VALUE;
+    
+    for (String part : parts) {
+        int num = Integer.parseInt(part);
+        
+        // Kiểm tra số chẵn (áp dụng đúng cho cả số âm như -2)
+        if (num % 2 == 0) {
+            countEven++;
+        }
+        
+        // Tìm số lớn nhất
+        if (num > max) {
+            max = num;
+        }
+    }
+    
+    return countEven + " " + max;
+}
