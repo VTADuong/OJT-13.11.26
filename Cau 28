@@ -1,0 +1,31 @@
+public static String kiemTraEmail(String s) {
+    // Kiểm tra chuỗi null, rỗng hoặc có chứa khoảng trắng (dấu cách)
+    if (s == null || s.isEmpty() || s.contains(" ")) {
+        return "KHONG HOP LE";
+    }
+    
+    // Tìm vị trí của ký tự '@' đầu tiên và cuối cùng
+    int atIndex = s.indexOf('@');
+    int lastAtIndex = s.lastIndexOf('@');
+    
+    // Phải có đúng 1 ký tự '@' (atIndex == lastAtIndex) 
+    // và phần trước '@' không được rỗng (atIndex > 0)
+    if (atIndex <= 0 || atIndex != lastAtIndex) {
+        return "KHONG HOP LE";
+    }
+    
+    // Lấy phần sau ký tự '@' (domain)
+    String domain = s.substring(atIndex + 1);
+    
+    // Kiểm tra các điều kiện của phần sau '@':
+    // - Không rỗng và phải có dấu chấm
+    // - Không bắt đầu hoặc kết thúc bằng dấu chấm
+    // - Không có 2 dấu chấm liền nhau
+    if (domain.isEmpty() || !domain.contains(".") 
+            || domain.startsWith(".") || domain.endsWith(".") 
+            || domain.contains("..")) {
+        return "KHONG HOP LE";
+    }
+    
+    return "HOP LE";
+}
