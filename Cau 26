@@ -1,0 +1,49 @@
+public static String danhSachDat(String s) {
+    if (s == null || s.trim().isEmpty()) {
+        return "KHONG CO";
+    }
+    
+    String[] items = s.split(",");
+    java.util.List<String[]> passed = new java.util.ArrayList<>();
+    
+    for (String item : items) {
+        String trimmed = item.trim();
+        if (trimmed.isEmpty()) continue;
+        
+        String[] parts = trimmed.split(":");
+        if (parts.length == 2) {
+            String ma = parts[0].trim();
+            double diem = Double.parseDouble(parts[1].trim());
+            // Lọc sinh viên có điểm từ 5 trở lên
+            if (diem >= 5.0) {
+                passed.add(new String[]{ma, String.valueOf(diem)});
+            }
+        }
+    }
+    
+    if (passed.isEmpty()) {
+        return "KHONG CO";
+    }
+    
+    // Sắp xếp: điểm giảm dần, nếu bằng điểm thì mã tăng dần
+    passed.sort((a, b) -> {
+        double d1 = Double.parseDouble(a[1]);
+        double d2 = Double.parseDouble(b[1]);
+        int cmp = Double.compare(d2, d1); // Giảm dần theo điểm
+        if (cmp != 0) {
+            return cmp;
+        }
+        return a[0].compareTo(b[0]); // Tăng dần theo mã
+    });
+    
+    // Ghép các mã sinh viên cách nhau 1 dấu cách
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < passed.size(); i++) {
+        result.append(passed.get(i)[0]);
+        if (i < passed.size() - 1) {
+            result.append(" ");
+        }
+    }
+    
+    return result.toString();
+}
